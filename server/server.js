@@ -5,9 +5,15 @@ const Express = require('express')
 const Http = require('http');
 const WebSocket = require('ws');
 const {createUUID64} = require('./uuid64')
+const path = require('path')
 
 // Create websocket listener
 const app = Express()
+app.use(Express.static(path.join(__dirname, '../react-game/build')));
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, '../react-game/', 'index.html'));
+})
+
 const server = Http.createServer(app);
 const wss = new WebSocket.Server({noServer: true})
 wss.on('error', (err) => {
@@ -21,7 +27,7 @@ server.on('upgrade', function(request, socket, head) {
   });
 });
 
-server.listen(1023)
+server.listen(80)
 console.log('Listening to players!')
 
 const playerMap = new Map()
